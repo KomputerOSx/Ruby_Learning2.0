@@ -8,3 +8,4 @@ gem 'rails', '~> 7.2', '>= 7.2.1'
 gem "benchmark"
 gem "benchmark_driver"
 gem "benchmark-ips"
+gem "colorize"
