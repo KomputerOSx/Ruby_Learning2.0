@@ -1,5 +1,7 @@
 
-def stock_picker(array)
+require 'benchmark/ips'
+
+def stock_picker1(array)
   profit = 0
   buy = 0
   sell = 0
@@ -10,17 +12,27 @@ def stock_picker(array)
         profit = future_element - element
         buy = element
         sell = future_element
-        puts "buy at #{buy} and sell at #{sell} with a profit of #{profit}"
-
       end
     end
+
   end
 
-  puts "\nFinal transaction is buy at #{buy} and sell at #{sell} with a profit of #{profit}"
+  [buy, sell, profit]
+
+end
+
+def stock_picker2(prices)
+  prices.each_with_index.to_a.combination(2).max_by{|buy,sell| sell[0]-buy[0]}.map{|price, i| i}
 end
 
 
-array = [17,3,6,9,15,8,6,1,10]
-stock_picker(array)
 
 
+
+prices = (1..100000).to_a.shuffle
+
+Benchmark.ips do |x|
+  x.report('stock_picker1') { stock_picker1(prices) }
+  x.report('stock_picker2') { stock_picker2(prices) }
+  x.compare!
+end
