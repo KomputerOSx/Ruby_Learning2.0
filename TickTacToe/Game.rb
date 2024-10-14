@@ -1,3 +1,5 @@
+require 'colorize'
+
 class Game
 
   def initialize
@@ -18,15 +20,16 @@ class Game
     end
   end
   def play
+
     while true
       if @player1.is_turn
         puts "Player 1's turn"
         @board.print_board
-        @board.player_input("X")
+        @board.player_input("X".colorize(:color => :red))
       else
         puts "Player 2's turn"
         @board.print_board
-        @board.player_input("O")
+        @board.player_input("O".colorize(:color => :blue))
       end
       1
 
@@ -52,13 +55,19 @@ class Game
         end
       end
 
+
       if check_winner
-        if @player1.is_turn
+        if
+        check_tie
+          puts "Tie"
+        elsif
+        @player1.is_turn
           puts "Player 1 wins"
         else
           puts "Player 2 wins"
         end
         break
+
       else
         switch_turn
       end
