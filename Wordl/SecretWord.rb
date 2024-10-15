@@ -1,21 +1,19 @@
-require 'uri'
-require 'net/http'
+
 
 class SecretWord
+attr_accessor :word, :player_input
+
   def initialize
-    @secret_word = get_random_5_letter_word
+    @word = get_random_5_letter_word
   end
   def get_random_5_letter_word
-    url = 'https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt'
-    uri = URI(url)
-    response = Net::HTTP.get(uri)
-    words = response.split("\n")
+    word_list = File.read('D:\Coding\Ruby\Wordl\words_alpha.txt').split("\n")
 
-    5_letter_words = words.select { |word| word.length == 5 }
+    five_letter_words = word_list.select { |word| word.length == 5 }
 
-    random_word = 5_letter_words.sample
-
-    random_word
+    five_letter_words.sample
   end
+
+
 
 end

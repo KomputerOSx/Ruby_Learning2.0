@@ -1,4 +1,4 @@
-#get a 5 letter word
+# get a 5 letter word
 # keep track of 6 turns
 # color yellow corect letter if in word but not right position
 # color green letter if in right position
@@ -7,87 +7,115 @@
 # a way to display all entries
 
 require_relative 'Board'
-require_relative 'Player'
+require_relative 'SecretWord'
 require 'colorize'
-class Board
+require 'uri'
+require 'net/http'
 
-  def initialize
-    @board = [["_","_","_","_","_"],
-              ["_","_","_","_","_"],
-              ["_","_","_","_","_"],
-              ["_","_","_","_","_"],
-              ["_","_","_","_","_"],
-              ["_","_","_","_","_"]]
-  end
-
-  def print_board
-
-    puts " #{@board[0][0]} | #{@board[0][1]} | #{@board[0][2]} | #{@board[0][3]} | #{@board[0][4]} "
-    puts "-----------"
-    puts " #{@board[1][0]} | #{@board[1][1]} | #{@board[1][2]} | #{@board[1][3]} | #{@board[1][4]} "
-    puts "-----------"
-    puts " #{@board[2][0]} | #{@board[2][1]} | #{@board[2][2]} | #{@board[2][3]} | #{@board[2][4]} "
-    puts "-----------"
-    puts " #{@board[3][0]} | #{@board[3][1]} | #{@board[3][2]} | #{@board[3][3]} | #{@board[3][4]} "
-    puts "-----------"
-    puts " #{@board[4][0]} | #{@board[4][1]} | #{@board[4][2]} | #{@board[4][3]} | #{@board[4][4]} "
-    puts "-----------"
-    puts " #{@board[5][0]} | #{@board[5][1]} | #{@board[5][2]} | #{@board[5][3]} | #{@board[5][4]} "
-
-  end
-
-  def remaining_letters
-    remaining_letters =
-  end
-
-end
 
 class Game
-
+  attr_accessor :board, :player, :secret_word, :letters_left, :used_letters, :turns
   def initialize
     @board = Board.new
-    @player = Player.new
     @secret_word = SecretWord.new
+    @letters_left = %w(a b c d e f g h i j k l m n o p q r s t u v w x y z)
     @used_letters = []
     @turns = 6
   end
-
-  def player_input
-    print "Enter a letter: "
-    @player.guess = gets.chomp
-    @used_letters << @player.guess
-    @player.guess.split("").each_with_index do |letter, index|
-      @board[@turns-1][index] = letter
+  def check_real_5_letter_word?(word)
+    if word.length != 5
+      puts "\nWord must be 5 letters long"
+      return false
     end
 
-    return @player.guess
+    word_list = File.read('D:\Coding\Ruby\Wordl\words_alpha.txt').split("\n")
+
+    if word_list.include?(word.downcase)
+      return true
+    else
+      puts "\nWord is not a real 5-letter English word"
+      return false
+    end
   end
   def turn_tracker
     if @turns > 0
-      puts "Turns left: #{@turns}"
+      puts "\nTurns left: #{@turns}"
     else
-      puts "You lose"
+      puts "\nYou lose"
+      puts "\nThe word was #{@secret_word.word.colorize(:color => :red)}"
+      exit
     end
+  end
+
+  def check_win (player_guess)
+    if player_guess == secret_word.word
+      return true
+    else
+      return false
+    end
+
   end
 
   def next_turn
     @turns -= 1
   end
 
-  def check_guess
-    player_input.each_char.with_index do |letter, index|
+  def play
+    while true
 
-      if letter == @secret_word[index]
-        @board[@turns-1][index] = letter.colorize(:color => :green)
+      turn_tracker()
 
-      elsif @secret_word.include?(letter)
-        @board[@turns-1][index] = letter.colorize(:color => :yellow)
+      print "\nEnter a 5 letter Word: "
+      player_guess = gets.chomp.downcase
 
-      els
+      unless check_real_5_letter_word?(player_guess)
+        redo
+      end
 
+      if @used_letters.any? { |letter| player_guess.include?(letter) }
+        puts "\nPlease Use New Letters".colorize(:color => :red)
+        redo
+      end
+
+      player_guess.chars.each_with_index do |letter, index|
+
+        if @secret_word.word[index] == letter
+          @board.board[6-@turns][index] = letter.colorize(:color => :green)
+        elsif @secret_word.word.include?(letter)
+          @board.board[6-@turns][index] = letter.colorize(:color => :yellow)
+        else
+          @board.board[6-@turns][index] = letter
+          @used_letters << letter
+          @letters_left.delete(letter)
+        end
 
       end
+
+      if check_win(player_guess)
+        @board.print_board
+        puts "\nYou Win".colorize(:color => :green)
+        break
+      end
+
+      @board.print_board
+      puts "\nRemaining Letters: \n #{@letters_left}"
+
+
+
+      next_turn()
+
+
     end
+
   end
 
 end
+
+
+wordl = Game.new
+puts wordl.secret_word.word
+
+wordl.board.print_board
+
+
+wordl.play
