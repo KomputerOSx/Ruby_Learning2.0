@@ -72,8 +72,6 @@ class Game
         switch_turn
       end
     end
-
-
   end
-
 end
+

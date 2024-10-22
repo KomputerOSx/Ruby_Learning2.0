@@ -1,6 +1,6 @@
-# get a 5 letter word
+# # # get a 5 letter word
 # keep track of 6 turns
-# color yellow corect letter if in word but not right position
+# color yellow correct letter if in word but not right position
 # color green letter if in right position
 # display remaining letters
 # ignore used letters
@@ -97,7 +97,7 @@ class Game
         break
       end
 
-      @board.print_board
+      @board.
       puts "\nRemaining Letters: \n #{@letters_left}"
 
 
@@ -113,9 +113,12 @@ end
 
 
 wordl = Game.new
-puts wordl.secret_word.word
+#puts wordl.secret_word.word
 
 wordl.board.print_board
 
 
 wordl.play
+
+
+

@@ -60,3 +60,23 @@ vehicles = {
   blake: {year: 2020, make: "Volkswagen", model: "Beetle"},
   caleb: {year: 2020, make: "Honda", model: "Accord"}
 }
+
+
+module Enumerable
+  def my_find
+    self.each do |elem|
+      return elem if yield(elem)
+    end
+
+    nil
+
+  end
+end
+
+
+
+
+
+
+
+
